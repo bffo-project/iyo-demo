@@ -54,6 +54,7 @@ jobs:
             --color-scheme light \
             --link-style file \
             --snapshots all \
+            --host github-pages \
             --strict
 
       - name: Build with the BFFO theme
@@ -64,6 +65,7 @@ jobs:
             --color-scheme light \
             --link-style file \
             --snapshots all \
+            --host github-pages \
             --theme theme \
             --strict
 
@@ -85,6 +87,7 @@ jobs:
                    default/demo/ObservationShape.html \
                    default/demo/method/gas-chromatography.html \
                    default/demo/1.0.0/index.html \
+                   default/adapters/github-pages/RESOLUTION.md \
                    bffo/index.html bffo/llms.txt bffo/manifest.json \
                    bffo/demo/Observation.html bffo/demo/1.0.0/index.html; do
             if [ ! -s "_site/$f" ]; then echo "::error::missing or empty: $f"; fail=1; fi
