@@ -31,7 +31,7 @@ jobs:
 
       - name: Cache the installed binary
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cargo/bin/iyo
           key: iyo-${{ env.IYO_VERSION }}-${{ runner.os }}
@@ -95,7 +95,7 @@ jobs:
           echo "files: $(find _site -type f | wc -l)"
           exit $fail
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
@@ -107,4 +107,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

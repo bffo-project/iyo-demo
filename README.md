@@ -32,6 +32,18 @@ the host rather than of iyo: the negotiation contract is in each site's
 on it. Both sites are therefore built with `--link-style file`, so links point
 at documents that exist.
 
+How far short does that fall? Measured rather than guessed:
+
+```console
+$ iyo conform _site/default --origin https://bffo-project.github.io/iyo-demo/default
+16 passed, 38 failed
+```
+
+All 16 that pass are negative cases, paths that must *not* resolve, which a file
+host gets right. Everything needing negotiation fails: no `Vary: Accept`, no
+`Link` signposting, and `Accept: text/turtle` answered with HTML rather than a
+303. The gate is reporting the host's limits, which is what it is for.
+
 ## The vocabulary
 
 A sample written for this demo. It describes nothing real, and its terms are

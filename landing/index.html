@@ -81,6 +81,13 @@ footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
     each site's <code>manifest.json</code>, and iyo compiles it into
     configuration for hosts that can act on it. Both sites are therefore built
     with <code>--link-style file</code>, so links point at documents that exist.</p>
+    <p>Pointed at this deployment, iyo&rsquo;s own conformance gate
+    (<code>iyo conform</code>) reports <strong>16 of 54 cases passing</strong>.
+    Every one that passes is a negative case, a path that must <em>not</em>
+    resolve, which a file host gets right. All 38 that need negotiation fail:
+    no <code>Vary: Accept</code>, no <code>Link</code> signposting, and
+    <code>Accept: text/turtle</code> answered with HTML instead of a redirect.
+    That is the gate working, not the tool failing.</p>
   </div>
   <p>The vocabulary is a small sample written for this demo, and describes
   nothing real. Its terms are identified by <code>example.org</code> IRIs, which
