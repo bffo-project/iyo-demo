@@ -51,6 +51,7 @@ jobs:
           iyo build vocabulary \
             --out _site/default \
             --base-url "$BASE/default/" \
+            --color-scheme light \
             --link-style file \
             --snapshots all \
             --strict
@@ -60,6 +61,7 @@ jobs:
           iyo build vocabulary \
             --out _site/bffo \
             --base-url "$BASE/bffo/" \
+            --color-scheme light \
             --link-style file \
             --snapshots all \
             --theme theme \

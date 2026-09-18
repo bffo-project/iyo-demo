@@ -7,18 +7,12 @@
 <meta name="description" content="Two builds of one small vocabulary by iyo, identical inputs, different themes. Example output for the iyo publishing tool.">
 <style>
 :root {
-  color-scheme: light dark;
+  /* Light only, to match the two sites below, which are built with
+     --color-scheme light. */
+  color-scheme: light;
   --bg: #ffffff; --fg: #1f2933; --muted: #52606d;
   --rule: #cbd2d9; --surface: #f5f7fa;
   --link: #0b5fa5; --link-visited: #6E3D9B; --accent: #2680C2;
-}
-:root:not([data-theme="light"]) { }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #12181f; --fg: #e4e7eb; --muted: #9aa5b1;
-    --rule: #3e4c59; --surface: #1c2530;
-    --link: #8ec7f5; --link-visited: #C9A6EC; --accent: #54D1DB;
-  }
 }
 * { box-sizing: border-box; }
 body {
