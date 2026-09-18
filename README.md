@@ -44,6 +44,13 @@ host gets right. Everything needing negotiation fails: no `Vary: Accept`, no
 `Link` signposting, and `Accept: text/turtle` answered with HTML rather than a
 303. The gate is reporting the host's limits, which is what it is for.
 
+Deploying this demo also found a bug in iyo itself. Each site carries a
+resolution note compiled from its manifest, and the one iyo 0.1.0 writes claims
+a term IRI does not resolve on GitHub Pages. It does:
+`/default/demo/Instrument` answers 200 with the HTML page, because Pages serves
+an extensionless path from the matching `.html` file. That is corrected for the
+next release.
+
 ## The vocabulary
 
 A sample written for this demo. It describes nothing real, and its terms are

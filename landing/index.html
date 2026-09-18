@@ -82,10 +82,12 @@ footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--rul
     no <code>Vary: Accept</code>, no <code>Link</code> signposting, and
     <code>Accept: text/turtle</code> answered with HTML instead of a redirect.
     That is the gate working, not the tool failing.</p>
-    <p>iyo writes that limitation down itself. Each site carries
-    <a href="./default/adapters/github-pages/RESOLUTION.md">a resolution note</a>
-    compiled from its own manifest, listing which URLs resolve on this host and
-    which do not.</p>
+    <p>iyo compiles a resolution note beside each site describing what this
+    host will do. Deploying this demo is what showed that the note shipped in
+    0.1.0 is itself wrong: it says a term IRI does not resolve on Pages, and
+    measuring this deployment showed that it does, to HTML. Checking a tool
+    against a real host is the only way that surfaces; the note is corrected
+    for the next release.</p>
   </div>
   <p>The vocabulary is a small sample written for this demo, and describes
   nothing real. Its terms are identified by <code>example.org</code> IRIs, which
