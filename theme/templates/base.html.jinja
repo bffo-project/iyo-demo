@@ -1,0 +1,164 @@
+{#-
+  BFFO layout: the default, with the website's header and footer.
+
+  It extends nothing -- minijinja resolves by file name, so this file
+  *replaces* the embedded base -- which means the accessibility floor in the
+  original's header comment is this file's responsibility now. Kept verbatim
+  and deliberately:
+
+  * `charset` first in head, `viewport` second;
+  * the skip link first in body, outside every landmark, targeting
+    `main[tabindex="-1"]`;
+  * the contents navigation before `main` in document order;
+  * every piece of content inside `header`, `nav`, `main` or `footer`.
+
+  The two `theme-switch` includes are the same: replacing `base` means
+  inheriting nothing from the layout it replaced, so a theme that wants the
+  colour-scheme control has to say so. They resolve to the embedded partials
+  unless this theme ships its own.
+
+  The nav mirrors `bffo-webapp/src/lib/components/Header.svelte`. Its links
+  are absolute to bffo.org because the site is a different application on the
+  same origin: this documentation is served at /ontology/ and /vocabulary/,
+  and Browse, Categories, Domains, Organizations and About all belong to the
+  SvelteKit app, which this build does not contain.
+
+  The wordmark is absolute too, and for the same reason as the rest: it means
+  BFFO the project, which is the website. That it currently *also* resolves
+  through `../` is an accident of this deployment -- the documentation's base
+  URL is the origin root, so the two roots coincide -- and an accident is a
+  poor thing to navigate by. Publish the documentation at `/docs/` one day
+  and the relative form would quietly start landing on the documentation
+  index instead.
+
+  `html.absolute-nav-link` would otherwise object, because this build writes
+  an `index.html` at that address even though production serves the website
+  there. `site.external_paths` in `iyo.toml` says the root is the website's;
+  that is a fact about the deployment, and the build cannot infer it.
+
+  No search box. The website's is a client-side index over formats; this tree
+  has `terms.json` and no JavaScript, and a box that looked the same and did
+  nothing would be worse than its absence.
+-#}
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{%- if site.theme_switch %}{% include "partials/theme-switch.html.jinja" %}{% endif %}
+<title>{% block title %}{{ site.title }}{% endblock %}</title>
+{%- block meta %}{% endblock %}
+<meta name="generator" content="{{ site.generator }} {{ site.generator_version }}">
+{%- block links %}{% endblock %}
+<link rel="stylesheet" href="{{ page.assets | url }}tokens.css">
+<link rel="stylesheet" href="{{ page.assets | url }}theme.css">
+<link rel="stylesheet" href="{{ page.assets | url }}bffo.css">
+{%- block structured_data %}{% endblock %}
+</head>
+<body>
+<a class="skip-link" href="#iyo-main">Skip to main content</a>
+<header class="bffo-header">
+  <div class="bffo-bar">
+    <a class="bffo-wordmark" href="https://bffo.org/">
+      <svg class="bffo-mark" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/>
+        <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+        <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/>
+      </svg>
+      <span>BFFO</span>
+    </a>
+    <nav class="bffo-nav" aria-label="BFFO site">
+      <ul>
+        <li><a href="https://bffo.org/formats/">Browse</a></li>
+        <li><a href="https://bffo.org/categories/">Categories</a></li>
+        <li><a href="https://bffo.org/domains/">Domains</a></li>
+        <li><a href="https://bffo.org/organizations/">Organizations</a></li>
+        <li><a href="{{ site.base_url | rel }}" aria-current="true">Ontology</a></li>
+        <li><a href="https://bffo.org/about/">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+{#-
+  The rail and the content, side by side above 60rem and stacked below it.
+  Source order is rail then `main`, which is also the reading order a screen
+  reader and a keyboard get; the columns are placed by grid, so the visual
+  arrangement costs the document order nothing.
+-#}
+<div class="bffo-layout">
+  <div class="bffo-rail">
+    <nav aria-label="Vocabularies" class="bffo-rail-nav">
+      <p class="nav-title">Vocabularies</p>
+      <ul class="nav-list">
+        {%- for ns in site.namespaces %}
+        <li>
+          <a href="{{ ns.url | rel }}"{% if page.collection_url and ns.url == page.collection_url %} aria-current="true"{% endif %}>{{ ns.title | default(ns.iri) }}</a>
+          <span class="bffo-count">{{ ns.term_count }}</span>
+        </li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    {%- block contents %}{% endblock %}
+    {%- if site.theme_switch %}{% include "partials/theme-switch-button.html.jinja" %}{% endif %}
+  </div>
+  <main id="iyo-main" tabindex="-1">
+{#-
+  The breadcrumb sits inside `main` and before the `h1`. That is allowed and
+  is why it is a `nav` with an `ol` rather than anything heading-shaped: the
+  accessibility floor forbids a heading before the `h1`, not a landmark.
+
+  The middle crumb is found by matching `page.collection_url` -- the
+  namespace document a term belongs to -- against `site.namespaces`, which is
+  the only place a namespace's *title* lives. A term page carries the URL and
+  not the name, so the theme joins them rather than the tool growing a field.
+-#}
+    {%- if page.kind == "term" or page.kind == "document" %}
+    <nav class="bffo-crumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ site.base_url | rel }}">{{ site.title }}</a></li>
+        {%- if page.kind == "term" %}
+          {%- for ns in site.namespaces if ns.url == page.collection_url %}
+          <li><a href="{{ ns.url | rel }}">{{ ns.title | default(ns.iri) }}</a></li>
+          {%- endfor %}
+          <li><span aria-current="page">{{ term.label }}</span></li>
+        {%- else %}
+          <li><span aria-current="page">{{ document.title }}</span></li>
+        {%- endif %}
+      </ol>
+    </nav>
+    {%- endif %}
+{% block main %}{% endblock %}
+  </main>
+</div>
+<footer class="bffo-footer">
+  <div class="bffo-footer-grid">
+    <div>
+      <h2>About BFFO</h2>
+      <p>The Bio File Formats &amp; Ontology (BFFO) is a structured knowledge base
+      documenting file formats used across bioinformatics, genomics, proteomics,
+      imaging, and related life sciences.</p>
+    </div>
+    <div>
+      <h2>Quick Links</h2>
+      <ul>
+        <li><a href="https://bffo.org/formats/">Browse Formats</a></li>
+        <li><a href="https://bffo.org/search/">Search</a></li>
+        <li><a href="https://bffo.org/organizations/">Organizations</a></li>
+        <li><a href="https://bffo.org/about/">About</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>This documentation</h2>
+      <p>
+        {%- if page.license %}Vocabulary under <a href="{{ page.license | rel }}">{{ page.license_label }}</a>{% endif %}
+        {%- if page.license and site.doc_license %}; documentation under <a href="{{ site.doc_license | rel }}">{{ site.doc_license_label }}</a>{% endif %}
+        {%- if not page.license and site.doc_license %}Documentation under <a href="{{ site.doc_license | rel }}">{{ site.doc_license_label }}</a>{% endif %}.
+      </p>
+      <p class="muted">Generated by <a href="https://github.com/nishad/iyo">{{ site.generator }}</a> {{ site.generator_version }}.
+      Machine-readable index: <a href="{{ site.llms_url | rel }}">llms.txt</a>.</p>
+    </div>
+  </div>
+  <p class="bffo-colophon">BFFO &mdash; Bio File Formats &amp; Ontology</p>
+</footer>
+</body>
+</html>

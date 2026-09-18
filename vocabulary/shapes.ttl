@@ -1,0 +1,59 @@
+# SHACL shapes for the vocabulary, published as a part of the release root.
+#
+# The shape is named in the demo: namespace although it is written here, which
+# is the normal split between where a term lives and where it is defined.
+
+@prefix demo:    <https://example.org/demo/> .
+@prefix method:  <https://example.org/demo/method/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix adms:    <http://www.w3.org/ns/adms#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+<https://example.org/demo/shapes/> a owl:Ontology ;
+    owl:versionIRI <https://example.org/demo/shapes/1.0.0/> ;
+    owl:versionInfo "1.0.0" ;
+    adms:status <http://purl.org/adms/status/UnderDevelopment> ;
+    dcterms:isPartOf demo: ;
+    dcterms:title "Example Observation Shapes" ;
+    dcterms:description "Validation constraints for an observation record."@en ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> .
+
+demo:ObservationShape a sh:NodeShape ;
+    sh:targetClass demo:Observation ;
+    rdfs:label "Observation Shape"@en ;
+    rdfs:comment "What a record must carry to count as an observation."@en ;
+    rdfs:isDefinedBy demo: ;
+    sh:closed false ;
+    sh:property [
+        sh:path demo:hasSample ;
+        sh:name "has sample" ;
+        sh:description "Exactly one sample was observed." ;
+        sh:class demo:Sample ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path demo:hasMethod ;
+        sh:name "method" ;
+        sh:description "The method must come from the scheme this release publishes." ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node [ sh:property [ sh:path skos:inScheme ; sh:hasValue method: ] ] ;
+    ] ;
+    sh:property [
+        sh:path demo:recordedValue ;
+        sh:name "recorded value" ;
+        sh:datatype xsd:decimal ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path demo:recordedAt ;
+        sh:name "recorded at" ;
+        sh:datatype xsd:dateTime ;
+        sh:maxCount 1 ;
+    ] .

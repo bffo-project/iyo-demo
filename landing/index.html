@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iyo demo: the same vocabulary, two themes</title>
+<meta name="description" content="Two builds of one small vocabulary by iyo, identical inputs, different themes. Example output for the iyo publishing tool.">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff; --fg: #1f2933; --muted: #52606d;
+  --rule: #cbd2d9; --surface: #f5f7fa;
+  --link: #0b5fa5; --link-visited: #6E3D9B; --accent: #2680C2;
+}
+:root:not([data-theme="light"]) { }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12181f; --fg: #e4e7eb; --muted: #9aa5b1;
+    --rule: #3e4c59; --surface: #1c2530;
+    --link: #8ec7f5; --link-visited: #C9A6EC; --accent: #54D1DB;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.wrap { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .5rem; }
+h2 { font-size: 1.15rem; margin: 2.5rem 0 .75rem; }
+.lede { color: var(--muted); font-size: 1.05rem; margin: 0 0 2rem; }
+a { color: var(--link); }
+a:visited { color: var(--link-visited); }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); padding: 0; margin: 0; list-style: none; }
+.card { border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); padding: 1.15rem; }
+.card h3 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.card h3 a { text-decoration: none; }
+.card h3 a::after { content: ""; position: absolute; inset: 0; }
+.card { position: relative; }
+.card p { margin: 0; color: var(--muted); font-size: .95rem; }
+.note { border-left: 3px solid var(--accent); padding: .1rem 0 .1rem 1rem; margin: 1.5rem 0; color: var(--muted); }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: var(--surface); padding: .1em .35em; border-radius: 4px; }
+ul.plain { padding-left: 1.2rem; }
+footer { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>iyo demo</h1>
+  <p class="lede">The same small vocabulary, built twice by the same version of
+  <a href="https://github.com/bffo-project/iyo">iyo</a>. Identical inputs and
+  identical commands; only <code>--theme</code> differs.</p>
+
+  <ul class="cards">
+    <li class="card">
+      <h3><a href="./default/">Default theme</a></h3>
+      <p>What iyo produces with nothing configured.</p>
+    </li>
+    <li class="card">
+      <h3><a href="./bffo/">BFFO theme</a></h3>
+      <p>A house style supplied as a directory of overrides.</p>
+    </li>
+  </ul>
+
+  <h2>What to look at</h2>
+  <ul class="plain">
+    <li>Any term page, then the <code>.md</code>, <code>.ttl</code> and
+      <code>.jsonld</code> files sharing its stem.</li>
+    <li><code>llms.txt</code> at each site root, written for agents rather than people.</li>
+    <li><code>manifest.json</code>, which describes the content negotiation the
+      site would need.</li>
+    <li><code>a11y/</code>, the build's own accessibility audit, recorded as data.</li>
+  </ul>
+
+  <h2>What this demo cannot show</h2>
+  <div class="note">
+    <p>GitHub Pages serves files and cannot negotiate content, so asking these
+    sites for <code>text/turtle</code> will not redirect you to the Turtle file.
+    That is a property of the host, not of iyo: the negotiation contract is in
+    each site's <code>manifest.json</code>, and iyo compiles it into
+    configuration for hosts that can act on it. Both sites are therefore built
+    with <code>--link-style file</code>, so links point at documents that exist.</p>
+  </div>
+  <p>The vocabulary is a small sample written for this demo, and describes
+  nothing real. Its terms are identified by <code>example.org</code> IRIs, which
+  do not resolve anywhere. Both sites publish those same identifiers, which is
+  the separation iyo is built around: what a term <em>is</em> does not change
+  because its documents are served from somewhere else.</p>
+
+  <footer>
+    <p>Built from <a href="https://github.com/bffo-project/iyo-demo">bffo-project/iyo-demo</a>
+    by <a href="https://crates.io/crates/iyo">iyo</a>, on every push.</p>
+  </footer>
+</main>
+</body>
+</html>

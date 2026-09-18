@@ -1,0 +1,86 @@
+# The release root of the iyo demo vocabulary.
+#
+# Nothing here describes anything real. It exists so that the demo site has a
+# vocabulary with the shape of a well-formed one: a versioned root, parts that
+# point back at it, and every term saying which vocabulary defines it.
+
+@prefix demo:    <https://example.org/demo/> .
+@prefix method:  <https://example.org/demo/method/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+@prefix adms:    <http://www.w3.org/ns/adms#> .
+@prefix foaf:    <http://xmlns.com/foaf/0.1/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+
+demo: a owl:Ontology ;
+    owl:versionIRI <https://example.org/demo/1.0.0/> ;
+    owl:versionInfo "1.0.0" ;
+    vann:preferredNamespacePrefix "demo" ;
+    vann:preferredNamespaceUri "https://example.org/demo/" ;
+    adms:status <http://purl.org/adms/status/UnderDevelopment> ;
+    dcterms:title "Example Observation Vocabulary" ;
+    dcterms:description "A sample vocabulary for recording observations made of a sample with an instrument. It is published only to demonstrate what the iyo publishing tool produces." ;
+    dcterms:abstract "Terms for describing an observation: what was observed, what made the observation, and by which method." ;
+    dcterms:creator [ a foaf:Person ; foaf:name "The iyo demo" ] ;
+    dcterms:contributor [ a foaf:Person ; foaf:name "The iyo demo" ] ;
+    dcterms:publisher [ a foaf:Organization ; foaf:name "BFFO Project" ] ;
+    dcterms:created "2026-09-18"^^xsd:date ;
+    dcterms:issued "2026-09-18"^^xsd:date ;
+    dcterms:modified "2026-09-18"^^xsd:date ;
+    dcterms:identifier "https://example.org/demo/" ;
+    dcterms:bibliographicCitation "Example Observation Vocabulary 1.0.0. Published as a demonstration of iyo." ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> ;
+    dcterms:hasPart method:, <https://example.org/demo/shapes/> .
+
+demo:Sample a owl:Class ;
+    rdfs:label "Sample"@en ;
+    rdfs:comment "Material that an observation is made of."@en ;
+    rdfs:isDefinedBy demo: .
+
+demo:Instrument a owl:Class ;
+    rdfs:label "Instrument"@en ;
+    rdfs:comment "A device that makes an observation."@en ;
+    rdfs:isDefinedBy demo: .
+
+demo:Observation a owl:Class ;
+    rdfs:label "Observation"@en ;
+    rdfs:comment "A single recorded measurement of a sample."@en ;
+    rdfs:isDefinedBy demo: .
+
+demo:hasSample a owl:ObjectProperty ;
+    rdfs:label "has sample"@en ;
+    rdfs:comment "The sample this observation was made of."@en ;
+    rdfs:domain demo:Observation ;
+    rdfs:range demo:Sample ;
+    rdfs:isDefinedBy demo: .
+
+demo:hasInstrument a owl:ObjectProperty ;
+    rdfs:label "has instrument"@en ;
+    rdfs:comment "The instrument that made this observation."@en ;
+    rdfs:domain demo:Observation ;
+    rdfs:range demo:Instrument ;
+    rdfs:isDefinedBy demo: .
+
+demo:hasMethod a owl:ObjectProperty ;
+    rdfs:label "has method"@en ;
+    rdfs:comment "The method by which this observation was made."@en ;
+    rdfs:domain demo:Observation ;
+    rdfs:range skos:Concept ;
+    rdfs:isDefinedBy demo: .
+
+demo:recordedValue a owl:DatatypeProperty ;
+    rdfs:label "recorded value"@en ;
+    rdfs:comment "The numeric value that was read."@en ;
+    rdfs:domain demo:Observation ;
+    rdfs:range xsd:decimal ;
+    rdfs:isDefinedBy demo: .
+
+demo:recordedAt a owl:DatatypeProperty ;
+    rdfs:label "recorded at"@en ;
+    rdfs:comment "When the observation was made."@en ;
+    rdfs:domain demo:Observation ;
+    rdfs:range xsd:dateTime ;
+    rdfs:isDefinedBy demo: .

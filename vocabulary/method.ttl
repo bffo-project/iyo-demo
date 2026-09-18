@@ -1,0 +1,55 @@
+# A SKOS concept scheme, published as a part of the release root.
+#
+# The hierarchy is declared with skos:topConceptOf and skos:broader, so the
+# generated pages have a tree to render.
+
+@prefix demo:    <https://example.org/demo/> .
+@prefix method:  <https://example.org/demo/method/> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix adms:    <http://www.w3.org/ns/adms#> .
+
+method: a skos:ConceptScheme, owl:Ontology ;
+    owl:versionIRI <https://example.org/demo/method/1.0.0/> ;
+    owl:versionInfo "1.0.0" ;
+    adms:status <http://purl.org/adms/status/UnderDevelopment> ;
+    dcterms:isPartOf demo: ;
+    dcterms:title "Example Observation Methods" ;
+    dcterms:description "The ways an observation in this vocabulary may have been made."@en ;
+    dcterms:license <https://creativecommons.org/publicdomain/zero/1.0/> .
+
+method:microscopy a skos:Concept ;
+    skos:inScheme method: ;
+    skos:topConceptOf method: ;
+    skos:notation "microscopy" ;
+    skos:prefLabel "Microscopy"@en ;
+    skos:definition "Observation through a magnifying optical or electron system."@en ;
+    rdfs:isDefinedBy method: .
+
+method:spectrometry a skos:Concept ;
+    skos:inScheme method: ;
+    skos:topConceptOf method: ;
+    skos:notation "spectrometry" ;
+    skos:prefLabel "Spectrometry"@en ;
+    skos:altLabel "Spectroscopy"@en ;
+    skos:definition "Observation of how a sample interacts with a spectrum."@en ;
+    rdfs:isDefinedBy method: .
+
+method:chromatography a skos:Concept ;
+    skos:inScheme method: ;
+    skos:topConceptOf method: ;
+    skos:notation "chromatography" ;
+    skos:prefLabel "Chromatography"@en ;
+    skos:definition "Observation of a mixture separated into its components."@en ;
+    rdfs:isDefinedBy method: .
+
+method:gas-chromatography a skos:Concept ;
+    skos:inScheme method: ;
+    skos:broader method:chromatography ;
+    skos:notation "gas-chromatography" ;
+    skos:prefLabel "Gas chromatography"@en ;
+    skos:definition "Chromatography in which the mobile phase is a gas."@en ;
+    skos:relatedMatch <https://example.org/other/gc> ;
+    rdfs:isDefinedBy method: .

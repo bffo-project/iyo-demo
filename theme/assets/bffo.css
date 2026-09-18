@@ -1,0 +1,254 @@
+/* BFFO header and footer, from bffo-webapp's Header.svelte and Footer.svelte.
+ *
+ * The site is Tailwind; this is not, because iyo's output has no build step
+ * and a page must be readable from a file:// checkout. The translation is
+ * literal: every Tailwind utility below became the declaration it stands for,
+ * and the colours are the same Palette 2 values app.css declares.
+ *
+ * The header's own colours are defined here rather than in tokens.toml,
+ * because tokens.toml carries the thirteen roles the contrast gate knows how
+ * to check and nothing else. These four are checked by hand and the ratios
+ * are recorded beside them; if the gate ever grows a `[[contrast.extra]]`
+ * table, they belong there instead. */
+:root {
+  --bffo-header-bg: #003E6B;   /* primary-900 */
+  --bffo-header-fg: #FFFFFF;   /* 12.6:1 on primary-900 */
+  --bffo-header-link: #B6E0FE; /* primary-100, 8.0:1 on primary-900 */
+  --bffo-header-hover: #0A558C;/* primary-800 */
+  --bffo-mark: #54D1DB;        /* cyan-300, the site's own mark; 6.06:1 */
+}
+
+.bffo-header {
+  background: var(--bffo-header-bg);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+.bffo-bar {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1rem;
+  min-height: 4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+/* Both of the chrome's link colours are stated twice, once bare and once for
+ * :visited, and the pair is not redundant. theme.css carries
+ * `a:visited { color: var(--color-link-visited) }`, which is specificity
+ * (0,1,1). `.bffo-wordmark` is (0,1,0) and loses to it outright, so the
+ * wordmark took the link colour the moment a reader had been to bffo.org --
+ * white in a fresh profile, blue in a real one, which is why it survived every
+ * check here. `.bffo-nav a` is (0,1,1) and only ties, winning on nothing but
+ * this file loading after theme.css. The twins settle both on purpose.
+ *
+ * Order matters for the nav pair: `.bffo-nav a:visited` is (0,2,1) and so are
+ * `:hover` and `[aria-current]` below, so those win on source order alone.
+ * The twins have to stay above them or a visited nav link stops highlighting. */
+.bffo-wordmark,
+.bffo-wordmark:visited {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--bffo-header-fg);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.025em;
+  text-decoration: none;
+}
+.bffo-mark { fill: none; stroke: var(--bffo-mark); stroke-width: 2; }
+.bffo-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bffo-nav a,
+.bffo-nav a:visited {
+  display: block;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--font-size--1);
+  font-weight: 500;
+  color: var(--bffo-header-link);
+  text-decoration: none;
+}
+.bffo-nav a:hover { background: var(--bffo-header-hover); color: var(--bffo-header-fg); }
+.bffo-nav a[aria-current] { color: var(--bffo-header-fg); background: var(--bffo-header-hover); }
+.bffo-header a:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* The chrome's decorative hairlines.
+ *
+ * `--color-border` is the role for boundaries that carry meaning: table rules,
+ * card edges, the sides of a figure. The gate holds it to WCAG 1.4.11's 3:1
+ * and it lands on neutral-500, 4.28:1 on white. A footer rule separates
+ * nothing a reader needs, which is the case 1.4.11 exempts, and at that weight
+ * it reads as a drawn line where the site has a hairline.
+ *
+ * Mixing the role into the ground it sits on gives the hairline back: #C5D0DB
+ * in light, a shade off the site's own neutral-200. It is a mix rather than a
+ * literal because the value then follows whichever scheme iyo published; a
+ * hardcoded dark block would fire on a light-only build. */
+:root {
+  --bffo-rule: color-mix(in srgb, var(--color-border) 30%, var(--color-surface-alt));
+}
+
+.bffo-footer {
+  margin-top: 4rem;
+  border-top: 1px solid var(--bffo-rule);
+  background: var(--color-surface-alt);
+  padding: 3rem 1rem 1.5rem;
+}
+.bffo-footer-grid {
+  margin-inline: auto;
+  max-width: 80rem;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+.bffo-footer h2 {
+  font-size: var(--font-size--1);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+}
+.bffo-footer p { font-size: var(--font-size--1); line-height: 1.625; color: var(--color-text-muted); margin: 0 0 0.5rem; }
+/* Quick Links. The size goes on the list, not on the anchor: with it on the
+ * anchor the li kept a 16px line box around 14px text, so each row was 25.6px
+ * tall before the 0.5rem gap even applied. On the list the box is 21px, and
+ * the gap comes off entirely -- the anchor carries its own height instead.
+ *
+ * That height is not decoration. 2.5.8 Target Size (Minimum) wants 24px, which
+ * the accidental line box happened to clear and a tightened one would not, so
+ * the anchors take the pattern theme.css already uses for .nav-list: inline-
+ * block, padding, and --min-target as the floor. 25px a row, down from 33.6.
+ *
+ * No underline at rest, because every item in this list is a link and there is
+ * no prose around them to be told apart from -- which is the whole job the
+ * underline does. It comes back on hover and focus. The paragraph links in the
+ * other two columns sit inside sentences and keep theirs. */
+.bffo-footer ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  font-size: var(--font-size--1);
+  line-height: var(--leading-list);
+}
+.bffo-footer li a {
+  display: inline-block;
+  padding-block: 0.125rem;
+  min-height: var(--min-target);
+  text-decoration: none;
+}
+.bffo-footer li a:hover,
+.bffo-footer li a:focus-visible { text-decoration: underline; }
+.bffo-colophon {
+  margin-inline: auto;
+  max-width: 80rem;
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--bffo-rule);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* The vocabulary strip sits directly under the site header, so it loses the
+ * top margin the default theme gives it. */
+.bffo-header + .site-header { margin-top: 0; }
+
+/* --- Layout: a rail beside the content ------------------------------------
+ *
+ * Source order is rail then `main`, which is the reading order too; the
+ * columns are placed by grid, so the visual arrangement costs the document
+ * order nothing and the skip link still lands where it says.
+ *
+ * Single column below 60rem. The rail then sits above the content, which is
+ * the right order on a phone: what vocabulary am I in, what is on this page,
+ * then the page. */
+.bffo-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin-inline: auto;
+  max-width: 80rem;
+}
+
+@media (min-width: 60rem) {
+  .bffo-layout {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--space-5);
+    padding-inline: 1rem;
+  }
+  .bffo-rail {
+    border-bottom: 0;
+    border-right: var(--border-width) solid var(--color-border);
+    padding-block: var(--space-5);
+  }
+  /* The band styling the default theme gives `.contents` is for a full-width
+   * strip. In the rail it is a section of the rail, not a band of its own. */
+  .bffo-rail .contents {
+    background: none;
+    border-bottom: 0;
+    padding-inline: 0;
+  }
+}
+
+/* Sticky above a threshold, and the threshold is the *viewport's height*.
+ *
+ * A rail pinned on a short screen steals the room the content needed; a rail
+ * that scrolls away on a tall one wastes the room it had. 44rem is about
+ * where a term page's rail stops being most of what you can see. It is also
+ * gated on the two-column layout, because a stacked rail has nothing to stick
+ * beside, and it keeps its own scrollbar so a long vocabulary list cannot
+ * push the page height around. */
+@media (min-width: 60rem) and (min-height: 44rem) {
+  .bffo-rail {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+
+.bffo-rail { padding: var(--space-4) var(--space-5); }
+.bffo-rail-nav .nav-list { display: grid; gap: 0.15rem; }
+.bffo-rail-nav .nav-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.bffo-rail-nav a[aria-current] { font-weight: 600; }
+.bffo-count {
+  font-size: var(--font-size--1);
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Breadcrumb ---------------------------------------------------------- */
+.bffo-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  font-size: var(--font-size--1);
+}
+.bffo-crumbs li + li::before {
+  content: "/";
+  margin-right: 0.5rem;
+  color: var(--color-text-muted);
+}
+.bffo-crumbs [aria-current="page"] { color: var(--color-text-muted); }

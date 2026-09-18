@@ -1,0 +1,96 @@
+# BFFO theme tokens.
+#
+# The palette is Refactoring UI Palette 2, the same one `bffo-webapp/src/app.css`
+# declares for the website, so the documentation and the site are the same
+# blues rather than two people's idea of blue. Names below are that file's:
+# primary-N is `--color-primary-N`, neutral-N is `--color-neutral-N`.
+#
+# Only the roles that differ from iyo's neutral default are set. Everything
+# else is inherited, which is the point of merging: this file is the brand,
+# not a copy of the default with the brand in it.
+
+schema = "iyo.tokens/1"
+
+[meta]
+name = "bffo"
+version = "1"
+description = "BFFO brand: Palette 2 blues, Inter, the site's header and footer."
+license = "CC-BY-4.0"
+
+[color.light]
+text         = "#102A43"   # neutral-900, the site's body colour
+text-muted   = "#486581"   # neutral-600
+link         = "#0F609B"   # primary-700
+link-visited = "#0F609B"   # deliberately the same as `link`; see the note
+focus        = "#2680C2"   # primary-500
+surface      = "#FFFFFF"
+surface-alt  = "#F0F4F8"   # neutral-50, the footer's ground
+surface-code = "#F0F4F8"
+border       = "#627D98"   # neutral-500. See the note below: the site's own
+                           # neutral-200 rule is 1.64:1 on white and fails WCAG 1.4.11.
+badge-fg     = "#003E6B"   # primary-900 on primary-100: a light badge, see the note
+badge-bg     = "#B6E0FE"   # primary-100
+banner-fg    = "#102A43"
+banner-bg    = "#FFF3C4"   # accent-100
+
+[color.dark]
+text         = "#F0F4F8"   # neutral-50
+text-muted   = "#BCCCDC"   # neutral-200
+link         = "#84C5F4"   # primary-200
+link-visited = "#84C5F4"   # same as `link`, as in the light scheme
+focus        = "#62B0E8"   # primary-300
+surface      = "#102A43"   # neutral-900
+surface-alt  = "#243B53"   # neutral-800
+surface-code = "#243B53"
+border       = "#9FB3C8"   # neutral-300, for 3:1 against every dark ground
+badge-fg     = "#DCEEFB"   # primary-050 on primary-900: dark badge, light text,
+badge-bg     = "#003E6B"   # the mirror of the light scheme, for the same reason
+banner-fg    = "#FFF3C4"   # accent-100
+banner-bg    = "#533F03"   # dark amber: the banner body uses `text`, which is
+                           # light in this scheme, so the ground must be dark
+
+# --------------------------------------------------------------------------
+# Why visited links do not change colour.
+#
+# `link-visited` is set to `link` in both schemes, which switches the
+# distinction off rather than removing it: iyo's `a:visited` rule still
+# applies, it just resolves to the same blue, and the gate still checks the
+# four visited pairs (against the same four ratios as `link`, necessarily).
+#
+# The convention earns its keep on a page of outbound links a reader works
+# through once. A vocabulary is the other thing: most links here point at
+# sibling terms in the same graph, and a reader who has opened Format once
+# sees purple on every page that references it from then on. That reads as a
+# property of the term rather than of their own history, and the site has no
+# purple in it at all. Nothing is lost that colour was carrying alone.
+#
+# --------------------------------------------------------------------------
+# What the contrast gate changed, and why it is worth recording.
+#
+# Three of the website's own colours do not survive it:
+#
+#   neutral-200 #BCCCDC as a border is 1.64:1 on white, where WCAG 1.4.11
+#   asks 3:1 of a boundary that means something. It is neutral-500 here.
+#   The website uses it decoratively, where the rule does not apply; a table
+#   rule separating data is not decorative.
+#
+#   the dark primary-800 badge cannot carry a focus ring at all. One `focus`
+#   value has to clear 3:1 against white *and* against the badge, and the
+#   arithmetic forbids it: 3:1 from white caps luminance at 0.175, and 3:1
+#   from primary-800 needs at least 0.354. So the badge is light here --
+#   primary-100 with primary-900 text, 7.93:1 -- and one primary-500 ring
+#   then works everywhere, 3.05:1 at its worst. The dark scheme is the same
+#   constraint mirrored: its surfaces are dark, so its ring and rule are
+#   light, so its badge has to be dark. primary-900 with primary-050 text,
+#   9.29:1.
+#
+#   accent-300 #FADB5F as a dark-scheme banner ground is 1.24:1 under light
+#   body text. The dark scheme needs a dark ground, not a dark-mode yellow.
+#
+# None of this is a disagreement with the brand. The site uses these colours
+# in places the rules do not reach; documentation uses them for table rules,
+# focus rings and status banners, where they do.
+# --------------------------------------------------------------------------
+
+[font-family]
+sans = "Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif"

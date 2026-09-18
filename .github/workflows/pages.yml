@@ -1,0 +1,110 @@
+name: Build and deploy the demo
+
+# The demo is rebuilt from the published crate rather than from a checkout of
+# iyo, so a green run here is also evidence that `cargo install iyo` works and
+# that the version on crates.io produces what this page claims it produces.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; never cancel one midway, which would leave the
+# site serving half an upload.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  IYO_VERSION: 0.1.0
+  BASE: https://bffo-project.github.io/iyo-demo
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Cache the installed binary
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/iyo
+          key: iyo-${{ env.IYO_VERSION }}-${{ runner.os }}
+
+      - name: Install iyo from crates.io
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: cargo install --locked iyo@${{ env.IYO_VERSION }}
+
+      - name: Report the version actually used
+        run: iyo --version
+
+      # `--link-style file` because GitHub Pages serves files and cannot
+      # negotiate: links must point at documents that exist, not at IRIs that
+      # would need a 303.
+      - name: Build with the default theme
+        run: |
+          iyo build vocabulary \
+            --out _site/default \
+            --base-url "$BASE/default/" \
+            --link-style file \
+            --snapshots all \
+            --strict
+
+      - name: Build with the BFFO theme
+        run: |
+          iyo build vocabulary \
+            --out _site/bffo \
+            --base-url "$BASE/bffo/" \
+            --link-style file \
+            --snapshots all \
+            --theme theme \
+            --strict
+
+      - name: Add the landing page
+        run: cp landing/index.html _site/index.html
+
+      # A build that wrote nothing would still deploy successfully and serve a
+      # blank site, so assert the things the landing page promises are there.
+      - name: Check the tree before uploading
+        run: |
+          fail=0
+          for f in index.html \
+                   default/index.html default/llms.txt default/manifest.json \
+                   default/release.ttl default/context.jsonld default/versions.json \
+                   default/a11y/structure.json \
+                   default/demo/index.html default/demo/llms.txt \
+                   default/demo/Observation.html default/demo/Observation.ttl \
+                   default/demo/Observation.md default/demo/Observation.jsonld \
+                   default/demo/ObservationShape.html \
+                   default/demo/method/gas-chromatography.html \
+                   default/demo/1.0.0/index.html \
+                   bffo/index.html bffo/llms.txt bffo/manifest.json \
+                   bffo/demo/Observation.html bffo/demo/1.0.0/index.html; do
+            if [ ! -s "_site/$f" ]; then echo "::error::missing or empty: $f"; fail=1; fi
+          done
+          # the two builds must differ, or the theme did not apply
+          if cmp -s _site/default/demo/Observation.html _site/bffo/demo/Observation.html; then
+            echo "::error::both themes produced an identical page; --theme had no effect"
+            fail=1
+          fi
+          echo "files: $(find _site -type f | wc -l)"
+          exit $fail
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

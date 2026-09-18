@@ -1,0 +1,32 @@
+This repository uses dual licensing, following the same split as
+bffo-project/bffo-ontology, from which the theme in `theme/` was copied.
+
+
+SAMPLE VOCABULARY (the .ttl files in vocabulary/)
+=================================================
+
+CC0 1.0 Universal — Public Domain Dedication
+
+To the extent possible under law, the authors have waived all copyright and
+related or neighboring rights to these files. They describe nothing real and
+exist only to give the demonstration pages something to render.
+
+https://creativecommons.org/publicdomain/zero/1.0/
+
+
+THEME, LANDING PAGE, DOCUMENTATION AND BUILD (theme/, landing/, README.md,
+.github/)
+==========================================================================
+
+Creative Commons Attribution 4.0 International (CC-BY-4.0)
+
+Copyright (c) 2026 BFFO Project
+
+You are free to share and adapt these files, provided you give appropriate
+credit, provide a link to the license, and indicate if changes were made.
+
+https://creativecommons.org/licenses/by/4.0/
+
+
+The tool that builds the sites, iyo, is a separate project under Apache-2.0:
+https://github.com/bffo-project/iyo
